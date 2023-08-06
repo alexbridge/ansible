@@ -1,0 +1,8 @@
+---
+- name: Ping host
+  hosts: all
+  tasks:
+    - name: Show running user
+      shell: /usr/bin/whoami
+      register: out
+    - debug: msg="{{ out.stdout }}"

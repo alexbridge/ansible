@@ -1,0 +1,86 @@
+---
+- hosts: all
+  become: true
+  gather_facts: false
+  vars_prompt:
+
+    - name: username
+      prompt: Username of remote user?
+      private: false
+    #- name: userpass
+    #  prompt: What is password?
+    #  private: false
+
+  tasks:
+
+    #- name: Enable port
+    #  lineinfile:
+    #    path: /etc/ssh/sshd_config
+    #    state: present
+    #    regexp: '^#?Port'
+    #    line: 'Port 22'
+
+    - name: Disable use PAM
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: '^#?UsePAM'
+        line: 'UsePAM no'
+
+    - name: Disable challenge response
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: '^#?ChallengeResponseAuthentication'
+        line: 'ChallengeResponseAuthentication no'
+
+    - name: Enable publickey
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: '^#?PubkeyAuthentication'
+        line: 'PubkeyAuthentication yes'
+
+    #- name: Disable password auth
+    #  lineinfile:
+    #    path: /etc/ssh/sshd_config
+    #    state: present
+    #    regexp: '^#?PasswordAuthentication'
+    #    line: 'PasswordAuthentication no'
+
+    #- name: Disable password authentication for root
+    #  lineinfile:
+    #    path: /etc/ssh/sshd_config
+    #    state: present
+    #    regexp: '^#?PermitRootLogin'
+    #    line: 'PermitRootLogin prohibit-password'
+
+    - name: Enable public keys file
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: '^#?AuthorizedKeysFile'
+        line: 'AuthorizedKeysFile .ssh/authorized_keys'
+
+    - name: Create User
+      ansible.builtin.user:
+        name: "{{ username }}"
+        state: present
+        shell: /bin/bash
+        password: "*"
+        update_password: on_create
+        groups: sudo
+        append: yes
+        create_home: true
+
+    - name: Deploy SSH Public Key
+      ansible.posix.authorized_key:
+        user: "{{ username }}"
+        state: present
+        key: "{{ lookup('file', '/home/{{ username }}/.ssh/id_rsa.pub') }}"
+      #notify: restart sshd
+
+
+  #handlers:
+    #- name: restart sshd
+      #shell: /usr/sbin/sshd -D
