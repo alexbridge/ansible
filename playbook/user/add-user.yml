@@ -17,6 +17,7 @@
         remote_src: true
         dest: "{{ item }}.{{ ansible_date_time.iso8601_basic_short }}.bak"
         backup: true
+        mode: 0644
       with_items:
         - /etc/ssh/sshd_config
         - /etc/sudoers
@@ -103,6 +104,7 @@
         owner: "{{ username }}"
         insertafter: EOF
         create: true
+        mode: 0644
       with_items:
         - "alias ll='ls -l'"
         - "alias la='ls -A'"
