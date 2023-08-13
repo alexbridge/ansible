@@ -24,3 +24,7 @@ Create inventory for remote host.
 
 Run Playbooks
 - check [Makefile](./Makefile) recipes for playbook commands
+
+#### Live example
+
+![Live Example](./usage.gif)
