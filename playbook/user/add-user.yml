@@ -1,7 +1,6 @@
 ---
 - hosts: all
   become: true
-  gather_facts: false
   vars_prompt:
 
     - name: username
@@ -12,6 +11,21 @@
     #  private: false
 
   tasks:
+    - name: Backup files
+      copy:
+        src: "{{ item }}"
+        remote_src: true
+        dest: "{{ item }}.{{ ansible_date_time.iso8601_basic_short }}.bak"
+        backup: true
+      with_items:
+        - /etc/ssh/sshd_config
+        - /etc/sudoers
+    - name: Make sudo passwordless
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^%sudo'
+        line: '%sudo ALL=(ALL) NOPASSWD: ALL'
 
     #- name: Enable port
     #  lineinfile:
@@ -60,7 +74,7 @@
         path: /etc/ssh/sshd_config
         state: present
         regexp: '^#?AuthorizedKeysFile'
-        line: 'AuthorizedKeysFile .ssh/authorized_keys'
+        line: 'AuthorizedKeysFile  ~/.ssh/authorized_keys'
 
     - name: Create User
       ansible.builtin.user:
@@ -80,6 +94,18 @@
         key: "{{ lookup('file', '/home/{{ username }}/.ssh/id_rsa.pub') }}"
       #notify: restart sshd
 
+    - name: Add some aliases
+      lineinfile:
+        path: /home/{{ username }}/.bashrc
+        state: present
+        regexp: "^{{ item }}$"
+        line: "{{ item }}"
+        owner: "{{ username }}"
+        insertafter: EOF
+        create: true
+      with_items:
+        - "alias ll='ls -l'"
+        - "alias la='ls -A'"
 
   #handlers:
     #- name: restart sshd

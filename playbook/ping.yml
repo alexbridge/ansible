@@ -5,4 +5,9 @@
     - name: Show running user
       shell: /usr/bin/whoami
       register: out
+
     - debug: msg="{{ out.stdout }}"
+
+    - name: Ansible date ISO8601 basic short
+      ansible.builtin.debug:
+        var: ansible_date_time.iso8601_basic_short

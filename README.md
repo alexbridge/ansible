@@ -1,4 +1,4 @@
-### Ansible roles for base VM setup
+### Ansible playbooks for base VM setup
 
 #### Local testing of playbooks
 
@@ -20,7 +20,7 @@ Run Playbooks:
 #### Execute playbooks on remote host
 
 Create inventory for remote host.  
-- Check local inventory file for details.
+- Check [remote.ini](/inventory/remote.ini) file for details.
 
 Run Playbooks
 - check [Makefile](./Makefile) recipes for playbook commands
