@@ -1,0 +1,5 @@
+---
+- name: Project backend
+  hosts: all
+  roles:
+    - project/backend

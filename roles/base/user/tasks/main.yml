@@ -1,0 +1,97 @@
+---
+
+- name: Backup files
+  copy:
+    src: "{{ item }}"
+    remote_src: true
+    dest: "{{ item }}.{{ ansible_date_time.iso8601_basic_short }}.bak"
+    backup: true
+  with_items:
+    - /etc/ssh/sshd_config
+    - /etc/sudoers
+
+- name: Make sudo passwordless
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%sudo'
+    line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+
+#- name: Enable port
+#  lineinfile:
+#    path: /etc/ssh/sshd_config
+#    state: present
+#    regexp: '^#?Port'
+#    line: 'Port 22'
+
+- name: Disable use PAM
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: '^#?UsePAM'
+    line: 'UsePAM no'
+
+- name: Disable challenge response
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: '^#?ChallengeResponseAuthentication'
+    line: 'ChallengeResponseAuthentication no'
+
+- name: Enable publickey
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: '^#?PubkeyAuthentication'
+    line: 'PubkeyAuthentication yes'
+
+#- name: Disable password auth
+#  lineinfile:
+#    path: /etc/ssh/sshd_config
+#    state: present
+#    regexp: '^#?PasswordAuthentication'
+#    line: 'PasswordAuthentication no'
+
+#- name: Disable password authentication for root
+#  lineinfile:
+#    path: /etc/ssh/sshd_config
+#    state: present
+#    regexp: '^#?PermitRootLogin'
+#    line: 'PermitRootLogin prohibit-password'
+
+- name: Enable public keys file
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: '^#?AuthorizedKeysFile'
+    line: 'AuthorizedKeysFile  ~/.ssh/authorized_keys'
+
+- name: Create User
+  ansible.builtin.user:
+    name: "{{ user_user }}"
+    state: present
+    shell: /bin/bash
+    password: "*"
+    update_password: on_create
+    groups: sudo
+    append: yes
+    create_home: true
+
+- name: Deploy SSH Public Key
+  ansible.posix.authorized_key:
+    user: "{{ user_user }}"
+    state: present
+    key: "{{ lookup('file', '/home/{{ user_user }}/.ssh/id_rsa.pub') }}"
+
+- name: Add some aliases
+  lineinfile:
+    path: /home/{{ user_user }}/.bashrc
+    state: present
+    regexp: "^{{ item }}$"
+    line: "{{ item }}"
+    owner: "{{ user_user }}"
+    insertafter: EOF
+    create: true
+  with_items:
+    - "alias ll='ls -l'"
+    - "alias la='ls -A'"

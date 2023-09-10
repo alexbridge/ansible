@@ -1,0 +1,8 @@
+---
+- name: Base VM install
+  hosts: all
+  roles:
+    - base/ping
+    - base/main
+    - base/git
+    - base/docker

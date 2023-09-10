@@ -1,0 +1,58 @@
+---
+- name: Install aptitude
+  ansible.builtin.apt:
+    name: aptitude
+    state: latest
+    update_cache: true
+
+- name: Setup passwordless sudo
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: "^%sudo"
+    line: "%sudo ALL=(ALL) NOPASSWD: ALL"
+    validate: "/usr/sbin/visudo -cf %s"
+
+- name: Update apt and install required system packages
+  ansible.builtin.apt:
+    pkg:
+      - curl
+      - vim
+      - make
+      - telnet
+    state: latest
+    update_cache: true
+
+- name: Update apt-get repo and cache
+  ansible.builtin.apt:
+    update_cache: yes
+    force_apt_get: yes
+    cache_valid_time: 3600
+
+- name: Add some aliases to root user
+  ansible.builtin.lineinfile:
+    path: ~/.bashrc
+    state: present
+    regexp: "^{{ item }}$"
+    line: "{{ item }}"
+    owner: "{{ base_user }}"
+    create: true
+  with_items:
+    - "alias ll='ls -l'"
+    - "alias la='ls -A'"
+
+- name: Create .ssh folder for "{{ base_user }}"
+  ansible.builtin.file:
+    path: ~/.ssh
+    state: directory
+    owner: "{{ base_user }}"
+    group: "{{ base_user }}"
+    mode: 0700
+
+- name: Generate SSH key for "{{ base_user }}"
+  community.crypto.openssh_keypair:
+    path: "~/.ssh/id_rsa"
+    type: rsa
+    size: 2048
+    state: present
+    force: no

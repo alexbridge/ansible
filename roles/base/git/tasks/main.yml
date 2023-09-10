@@ -1,0 +1,14 @@
+---
+- name: Install git
+  ansible.builtin.apt:
+    name: git
+    state: present
+    update_cache: yes
+
+- name: Create projects folder
+  ansible.builtin.file:
+    path: /opt/deployments
+    state: directory
+    owner: "{{ git_user }}"
+    group: "{{ git_user }}"
+    mode: 0700

@@ -1,0 +1,4 @@
+---
+nginx_server_name: website.com
+nginx_remote_path: /var/www/html
+nginx_index_title: Website

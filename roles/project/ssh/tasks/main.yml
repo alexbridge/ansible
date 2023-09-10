@@ -1,0 +1,27 @@
+---
+- name: Add known hosts
+  shell: ssh-keyscan -H {{ item.host }} >> ~/.ssh/known_hosts
+  with_items: "{{ project_known_hosts }}"
+  loop_control:
+    label: "Known host: {{ item.comment }}"
+
+- name: Upsert public keys to the host
+  authorized_key:
+    user: "{{ item.user }}"
+    key: "{{ item.key }}"
+    comment: "{{ item.comment }}"
+    state: present
+  with_items: "{{ project_ssh_keys }}"
+  when: item.active
+  loop_control:
+    label: "Upsert: {{ item.comment }}"
+
+- name: Remove inactive public keys
+  authorized_key:
+    user: "{{ item.user }}"
+    key: "{{ item.key }}"
+    state: absent
+  with_items: "{{ project_ssh_keys }}"
+  when: not item.active
+  loop_control:
+    label: "Remove: {{ item.comment }}"

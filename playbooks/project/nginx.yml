@@ -1,0 +1,5 @@
+---
+- name: Project Nginx
+  hosts: all
+  roles:
+    - project/nginx

@@ -1,0 +1,5 @@
+---
+- name: Project ssh
+  hosts: all
+  roles:
+    - project/ssh

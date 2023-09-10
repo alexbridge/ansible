@@ -1,0 +1,37 @@
+---
+- name: Delete {{ project_backend_directory }} folder
+  ansible.builtin.file:
+    state: absent
+    path: "/opt/deployments/backend/{{ project_backend_directory }}"
+
+- name: Create project folder
+  ansible.builtin.file:
+    path: "/opt/deployments/backend/{{ project_backend_directory }}"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: 0700
+
+- name: Clone repository
+  ansible.builtin.git:
+    repo: "{{ project_backend_repo }}"
+    dest: "/opt/deployments/backend/{{ project_backend_directory }}"
+    recursive: yes
+    update: yes
+    version: "{{ project_backend_branch }}"
+
+- name: Check docker active
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Check
+  ansible.builtin.command: make check
+  args:
+    chdir: "/opt/deployments/backend/{{ project_backend_directory }}/docker"
+
+- name: Start
+  ansible.builtin.command: make start
+  args:
+    chdir: "/opt/deployments/backend/{{ project_backend_directory }}/docker"
