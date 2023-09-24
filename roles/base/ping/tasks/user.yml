@@ -1,0 +1,13 @@
+---
+- name: Display local user
+  ansible.builtin.debug:
+    msg: "Local user: {{ ping_local_user }}"
+
+- name: Get remote user
+  ansible.builtin.command: whoami
+  register: out_remote
+  changed_when: false
+
+- name: Display remote user
+  ansible.builtin.debug:
+    msg: "Remote user: {{ out_remote.stdout }}"

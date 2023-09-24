@@ -9,14 +9,14 @@
 First create and run ***Ubuntu*** Docker container
 
 - inside `local` directory
-- `make init-ubuntu` : this will create local ubuntu VM and local inventory file
+- `make init-ubuntu` : this will create 4 local ubuntu VMs and local inventory file
 
 Check [local Makefile](./local/Makefile) recipes for local playbook commands
 
 Base VM setup Playbooks:
 
-- `make ping`: to check is key connection works
-- `make play-ping`: to check is Ubuntu Container availabe, debug some variables
+- `make ping`: to check if connection works
+- `make play-ping`: run roles/base/ping to check group/hosts vars, facts, etc
 - `make play-base`: basic VM setup (packages): git, docker, etc.
 
 Project specific VM setup Playbooks:
@@ -26,7 +26,7 @@ Project specific VM setup Playbooks:
 
 #### Execute playbooks on remote host
 
-Update [./inventory/remote.ini](./inventory/remote.ini)  
+Update [./inventory/remote/remote.ini](./inventory/remote/remote.ini)  
 
 - add remote VM IP address and other configs (if needed)
 

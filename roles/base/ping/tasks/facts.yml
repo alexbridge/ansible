@@ -1,0 +1,4 @@
+---
+- name: Display date short
+  ansible.builtin.debug:
+    msg: "Date short: {{ ansible_date_time.iso8601_basic_short[:8] }}"

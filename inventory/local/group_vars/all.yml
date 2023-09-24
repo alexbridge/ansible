@@ -1,0 +1,3 @@
+---
+group_var: group_vars/all
+host_var: group_vars/all

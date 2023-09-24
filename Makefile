@@ -1,6 +1,8 @@
 SHELL := /bin/bash
 FZF_DEFAULT_OPTS ?='--height 50% --layout=reverse --border --exact'
 
+.ONESHELL:
+
 .DEFAULT:
 _recipe-list:
 	@recipe=$$(grep -oE '^[a-z][a-zA-Z0-9-]+:' Makefile | tr -d ':' | \
@@ -8,21 +10,22 @@ _recipe-list:
 	[[ -n "$$recipe" ]] && make --silent $$recipe
 
 
-# Remote VM. Replace 172.17.0.2 with remote VM IP
+# Remote VM. Replace LOCAL IP with remote VM IP
 remote-ssh-login:
-	ssh -i ./inventory/.ssh/ansible-ubuntu root@172.17.0.2
+	source ./local/bash-helpers/helpers.sh
+	ssh -i ./inventory/remote/.ssh/ansible-ubuntu "root@$$(Docker::getIP ansible-ubuntu-server-1)"
 
 ping:
-	ansible -m ping -i ./inventory/remote.ini all
+	ansible -m ping -i ./inventory/remote/remote.ini all
 play-ping:
-	ansible-playbook -i ./inventory/remote.ini playbooks/ping.yml
+	ansible-playbook -i ./inventory/remote/remote.ini playbooks/ping.yml
 play-base:
-	ansible-playbook -i ./inventory/remote.ini playbooks/base.yml
+	ansible-playbook -i ./inventory/remote/remote.ini playbooks/base.yml
 play-project-nginx:
-	ansible-playbook -i ./inventory/remote.ini playbooks/project/nginx.yml
+	ansible-playbook -i ./inventory/remote/remote.ini playbooks/project/nginx.yml
 play-project-ssh:
-	ansible-playbook -i ./inventory/remote.ini playbooks/project/ssh.yml	
+	ansible-playbook -i ./inventory/remote/remote.ini playbooks/project/ssh.yml	
 play-project-backend:
-	ansible-playbook -i ./inventory/remote.ini playbooks/project/backend.yml	
+	ansible-playbook -i ./inventory/remote/remote.ini playbooks/project/backend.yml	
 play-user:
-	ansible-playbook -i ./inventory/remote.ini playbooks/user.yml
+	ansible-playbook -i ./inventory/remote/remote.ini playbooks/user.yml

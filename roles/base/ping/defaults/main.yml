@@ -1,3 +1,6 @@
 ---
 ping_var1: Ping Var 1
 ping_local_user: "{{ lookup('env', 'USER') }}"
+ping_user: false
+ping_facts: false
+ping_docker: false

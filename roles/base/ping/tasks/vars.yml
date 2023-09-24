@@ -1,0 +1,8 @@
+---
+- name: Print group var
+  ansible.builtin.debug:
+    msg: "Group var: {{ group_var }}"
+
+- name: Print host var
+  ansible.builtin.debug:
+    msg: "Host var: {{ host_var }}"

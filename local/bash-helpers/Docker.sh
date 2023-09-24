@@ -49,7 +49,7 @@ function Docker::findByLabel() {
 }
 
 function Docker::getIP() {
-  docker inspect --format '{{ .NetworkSettings.IPAddress }}' $1
+  docker inspect --format '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $1
 }
 
 fi
