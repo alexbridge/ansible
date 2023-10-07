@@ -3,7 +3,7 @@
   ansible.builtin.apt:
     name: git
     state: present
-    update_cache: yes
+    update_cache: true
 
 - name: Create projects folder
   ansible.builtin.file:
@@ -11,4 +11,4 @@
     state: directory
     owner: "{{ git_user }}"
     group: "{{ git_user }}"
-    mode: 0700
+    mode: "0700"

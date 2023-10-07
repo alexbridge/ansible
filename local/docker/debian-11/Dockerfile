@@ -1,10 +1,10 @@
-FROM ubuntu:18.04
+FROM debian:11-slim
 
 EXPOSE 22
 
 USER root
 
-RUN apt-get update && apt-get install -y openssh-server sudo gpg cron
+RUN apt-get update && apt-get install -y openssh-server sudo gpg cron python3
 
 
 # RUN echo 'root:root' | chpasswd

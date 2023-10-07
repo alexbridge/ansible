@@ -10,22 +10,26 @@ _recipe-list:
 	[[ -n "$$recipe" ]] && make --silent $$recipe
 
 
+REMOTE_ID := -i ./inventory/remote/.ssh/ansible-ubuntu
+
 # Remote VM. Replace LOCAL IP with remote VM IP
 remote-ssh-login:
 	source ./local/bash-helpers/helpers.sh
 	ssh -i ./inventory/remote/.ssh/ansible-ubuntu "root@$$(Docker::getIP ansible-ubuntu-server-1)"
 
+INV_FILE := -i ./inventory/remote/remote.ini
+
 ping:
-	ansible -m ping -i ./inventory/remote/remote.ini all
+	ansible -m ping $(INV_FILE)
 play-ping:
-	ansible-playbook -i ./inventory/remote/remote.ini playbooks/ping.yml
+	ansible-playbook $(INV_FILE) playbooks/ping.yml
 play-base:
-	ansible-playbook -i ./inventory/remote/remote.ini playbooks/base.yml
+	ansible-playbook $(INV_FILE) playbooks/base.yml
 play-project-nginx:
-	ansible-playbook -i ./inventory/remote/remote.ini playbooks/project/nginx.yml
+	ansible-playbook $(INV_FILE) playbooks/project/nginx.yml
 play-project-ssh:
-	ansible-playbook -i ./inventory/remote/remote.ini playbooks/project/ssh.yml	
+	ansible-playbook $(INV_FILE) playbooks/project/ssh.yml	
 play-project-backend:
-	ansible-playbook -i ./inventory/remote/remote.ini playbooks/project/backend.yml	
+	ansible-playbook $(INV_FILE) playbooks/project/backend.yml	
 play-user:
-	ansible-playbook -i ./inventory/remote/remote.ini playbooks/user.yml
+	ansible-playbook $(INV_FILE) playbooks/user.yml

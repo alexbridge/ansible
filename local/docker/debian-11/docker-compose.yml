@@ -3,25 +3,25 @@ version: '3.8'
 services:
   server-1:
     container_name: ansible-server-1
-    image: ansible-ubuntu/server:latest
+    image: ansible-debian/server:latest
     restart: unless-stopped
     networks:
       - services
   server-2:
     container_name: ansible-server-2
-    image: ansible-ubuntu/server:latest
+    image: ansible-debian/server:latest
     restart: unless-stopped
     networks:
       - services
   server-3:
     container_name: ansible-server-3
-    image: ansible-ubuntu/server:latest
+    image: ansible-debian/server:latest
     restart: unless-stopped
     networks:
       - services
   server-4:
     container_name: ansible-server-4
-    image: ansible-ubuntu/server:latest
+    image: ansible-debian/server:latest
     restart: unless-stopped
     networks:
       - services

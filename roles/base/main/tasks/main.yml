@@ -2,7 +2,7 @@
 - name: Install aptitude
   ansible.builtin.apt:
     name: aptitude
-    state: latest
+    state: present
     update_cache: true
 
 - name: Setup passwordless sudo
@@ -20,13 +20,13 @@
       - vim
       - make
       - telnet
-    state: latest
+    state: present
     update_cache: true
 
 - name: Update apt-get repo and cache
   ansible.builtin.apt:
-    update_cache: yes
-    force_apt_get: yes
+    update_cache: true
+    force_apt_get: true
     cache_valid_time: 3600
 
 - name: Add some aliases to root user
@@ -37,6 +37,7 @@
     line: "{{ item }}"
     owner: "{{ base_user }}"
     create: true
+    mode: "0644"
   with_items:
     - "alias ll='ls -l'"
     - "alias la='ls -A'"
@@ -47,7 +48,7 @@
     state: directory
     owner: "{{ base_user }}"
     group: "{{ base_user }}"
-    mode: 0700
+    mode: "0700"
 
 - name: Generate SSH key for "{{ base_user }}"
   community.crypto.openssh_keypair:
@@ -55,4 +56,4 @@
     type: rsa
     size: 2048
     state: present
-    force: no
+    force: false
