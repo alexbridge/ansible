@@ -1,0 +1,33 @@
+---
+- name: Print group var
+  ansible.builtin.debug:
+    msg: "Group var: {{ group_var }}"
+
+- name: Print host var
+  ansible.builtin.debug:
+    msg: "Host var: {{ host_var }}"
+
+- name: Print bool1
+  ansible.builtin.debug:
+    msg: "Base echo bool1: {{ base_echo_bool1 }}"
+
+- name: Print bool2
+  ansible.builtin.debug:
+    msg: "Base echo bool2: {{ base_echo_bool2 }}"
+
+- name: Print str1
+  ansible.builtin.debug:
+    msg: "Base echo str1: {{ base_echo_str1 }}"
+
+- name: Print str2
+  ansible.builtin.debug:
+    msg: "Base echo str2: {{ base_echo_str2 }}"
+
+- name: Print str2
+  ansible.builtin.debug:
+    msg:
+      - "str: {{ item.str }}"
+      - "str type: {{ item.str | type_debug }}"
+      - "bool: {{ item.bool }}"
+      - "bool type: {{ item.bool | type_debug }}"
+  with_items: "{{ base_echo_vars }}"

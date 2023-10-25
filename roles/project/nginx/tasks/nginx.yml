@@ -1,0 +1,52 @@
+---
+- name: Generate Nginx
+  ansible.builtin.template:
+    src: "{{ item.server_name }}.conf.j2"
+    dest: /etc/nginx/sites-available/{{ item.server_name }}.conf
+    owner: root
+    group: root
+    mode: "0755"
+  with_items: "{{ nginx_sites }}"
+  loop_control:
+    label: "sites-available: {{ item.server_name }}"
+
+- name: Enable Nginx
+  ansible.builtin.template:
+    src: "{{ item.server_name }}.conf.j2"
+    dest: /etc/nginx/sites-enabled/{{ item.server_name }}.conf
+    owner: root
+    group: root
+    mode: "0755"
+  with_items: "{{ nginx_sites }}"
+  loop_control:
+    label: "sites-enabled: {{ item.server_name }}"
+
+- name: Create document root
+  ansible.builtin.file:
+    path: /var/www/html/{{ item.server_name }}
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: "0755"
+    force: false
+  with_items: "{{ nginx_sites }}"
+  when: item.static
+  loop_control:
+    label: "document root: {{ item.server_name }}"
+
+- name: Delete index.html file
+  ansible.builtin.file:
+    path: "/var/www/html/{{ item.server_name }}/index.html"
+    state: absent
+  with_items: "{{ nginx_sites }}"
+  when: item.static
+
+- name: Generate index.html
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: "/var/www/html/{{ item.server_name }}/index.html"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: "0755"
+  with_items: "{{ nginx_sites }}"
+  when: item.static

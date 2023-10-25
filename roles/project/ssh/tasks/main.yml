@@ -6,7 +6,7 @@
     label: "Known host: {{ item.comment }}"
 
 - name: Upsert public keys to the host
-  authorized_key:
+  ansible.posix.authorized_key:
     user: "{{ item.user }}"
     key: "{{ item.key }}"
     comment: "{{ item.comment }}"
@@ -17,7 +17,7 @@
     label: "Upsert: {{ item.comment }}"
 
 - name: Remove inactive public keys
-  authorized_key:
+  ansible.posix.authorized_key:
     user: "{{ item.user }}"
     key: "{{ item.key }}"
     state: absent

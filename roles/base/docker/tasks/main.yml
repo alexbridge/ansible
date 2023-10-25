@@ -1,10 +1,9 @@
 ---
-
 - name: Install docker
   ansible.builtin.apt:
-    name: "{{item}}"
+    name: "{{ item }}"
     state: present
-    update_cache: yes
+    update_cache: true
   loop:
     - apt-transport-https
     - ca-certificates
@@ -12,21 +11,21 @@
     - gnupg-agent
     - software-properties-common
 
-- name: add docker GPG key
+- name: Add docker GPG key
   ansible.builtin.apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
 
-- name: add docker repository to apt
+- name: Add docker repository to apt
   ansible.builtin.apt_repository:
     repo: deb https://download.docker.com/linux/ubuntu bionic stable
     state: present
 
-- name: install docker
+- name: Install docker
   ansible.builtin.apt:
-    name: "{{item}}"
-    state: latest
-    update_cache: yes
+    name: "{{ item }}"
+    state: present
+    update_cache: true
   loop:
     - docker-ce
     - docker-ce-cli
@@ -36,4 +35,4 @@
   ansible.builtin.service:
     name: docker
     state: started
-    enabled: yes
+    enabled: true

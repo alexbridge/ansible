@@ -1,0 +1,8 @@
+---
+- name: Prune certbot cerificates if active
+  ansible.builtin.command:
+    cmd: "certbot delete --cert-name {{ item }} --noninteractive"
+  changed_when: false
+  ignore_errors: true
+  with_items: "{{ certbot_domains }}"
+  when: certbot_prune

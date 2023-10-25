@@ -1,0 +1,40 @@
+---
+- name: Install packages
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - cron
+    - certbot
+    - python3-certbot-nginx
+
+- name: Run Nginx snippets
+  ansible.builtin.include_tasks: snippets.yml
+
+- name: Copy certbot hook
+  ansible.builtin.copy:
+    src: renew-hook.sh
+    dest: /etc/letsencrypt/renew-hook.sh
+    mode: "0755"
+
+- name: Prune all certificates {{ certbot_prune }}
+  ansible.builtin.include_tasks: certbot_prune.yml
+  when: certbot_prune
+
+- name: Install certificates standalone
+  ansible.builtin.command:
+    cmd: |
+      certbot certonly
+      --noninteractive
+      --nginx
+      --domain {{ certbot_domains | join(',') }}
+      --agree-tos
+      --email {{ certbot_email }}
+  changed_when: false
+
+- name: Set up automatic renewal
+  ansible.builtin.cron:
+    name: certbot
+    minute: "0"
+    hour: "2,14"
+    job: "/usr/bin/certbot renew --quiet --no-self-upgrade --renew-hook /etc/letsencrypt/renew-hook.sh"

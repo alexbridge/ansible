@@ -1,0 +1,15 @@
+---
+- name: Run user echo tasks
+  ansible.builtin.include_tasks: user.yml
+  when: base_echo_user
+
+- name: Run facts echo tasks
+  ansible.builtin.include_tasks: facts.yml
+  when: base_echo_facts
+
+- name: Run docker echo tasks
+  ansible.builtin.include_tasks: docker.yml
+  when: base_echo_docker
+
+- name: Run vars echo tasks
+  ansible.builtin.include_tasks: vars.yml

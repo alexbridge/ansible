@@ -1,0 +1,17 @@
+---
+- name: Install Nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+
+- name: Nginx static folders and snippets
+  ansible.builtin.include_tasks: other.yml
+
+- name: Run Nginx tasks
+  ansible.builtin.include_tasks: nginx.yml
+
+- name: Restart Nginx service
+  ansible.builtin.service:
+    name: nginx
+    enabled: true
+    state: restarted

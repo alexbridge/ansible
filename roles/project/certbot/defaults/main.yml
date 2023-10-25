@@ -1,0 +1,9 @@
+---
+certbot_domains:
+  - "example.com"
+  - "subdomain.example.com"
+
+certbot_email: dev@example.com
+
+# Set to true to remove all certificates before obtaining new
+certbot_prune: false

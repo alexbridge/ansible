@@ -1,0 +1,26 @@
+---
+- name: Create nginx folder if not exists
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: "0755"
+    force: false
+  with_items:
+    - /etc/letsencrypt
+    - /etc/nginx/snippets
+    - /var/www/letsencrypt
+    - /var/www/letsencrypt/.well-known/acme-challenge
+  loop_control:
+    label: "nginx folder: {{ item }}"
+
+- name: Copy nginx snippets
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/etc/nginx/snippets/{{ item }}"
+    mode: "0755"
+  with_items:
+    - letsencrypt.conf
+  loop_control:
+    label: "nginx snippet: {{ item }}"

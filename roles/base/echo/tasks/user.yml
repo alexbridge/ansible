@@ -1,7 +1,7 @@
 ---
 - name: Display local user
   ansible.builtin.debug:
-    msg: "Local user: {{ ping_local_user }}"
+    msg: "Local user: {{ base_echo_local_user }}"
 
 - name: Get remote user
   ansible.builtin.command: whoami

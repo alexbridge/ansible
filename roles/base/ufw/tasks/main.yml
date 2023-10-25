@@ -1,10 +1,10 @@
 ---
 - name: Update apt and install required system packages
-  apt:
+  ansible.builtin.apt:
     pkg:
       - kmod
       - ufw
-    state: latest
+    state: present
     update_cache: true
 
 - name: UFW rules

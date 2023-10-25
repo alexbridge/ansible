@@ -1,7 +1,6 @@
 ---
-
 - name: Backup files
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     remote_src: true
     dest: "{{ item }}.{{ ansible_date_time.iso8601_basic_short }}.bak"
@@ -11,11 +10,11 @@
     - /etc/sudoers
 
 - name: Make sudo passwordless
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/sudoers
     state: present
-    regexp: '^%sudo'
-    line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+    regexp: "^%sudo"
+    line: "%sudo ALL=(ALL) NOPASSWD: ALL"
 
 #- name: Enable port
 #  lineinfile:
@@ -25,25 +24,25 @@
 #    line: 'Port 22'
 
 - name: Disable use PAM
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     state: present
-    regexp: '^#?UsePAM'
-    line: 'UsePAM no'
+    regexp: "^#?UsePAM"
+    line: "UsePAM no"
 
 - name: Disable challenge response
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     state: present
-    regexp: '^#?ChallengeResponseAuthentication'
-    line: 'ChallengeResponseAuthentication no'
+    regexp: "^#?ChallengeResponseAuthentication"
+    line: "ChallengeResponseAuthentication no"
 
 - name: Enable publickey
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     state: present
-    regexp: '^#?PubkeyAuthentication'
-    line: 'PubkeyAuthentication yes'
+    regexp: "^#?PubkeyAuthentication"
+    line: "PubkeyAuthentication yes"
 
 #- name: Disable password auth
 #  lineinfile:
@@ -60,11 +59,11 @@
 #    line: 'PermitRootLogin prohibit-password'
 
 - name: Enable public keys file
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     state: present
-    regexp: '^#?AuthorizedKeysFile'
-    line: 'AuthorizedKeysFile  ~/.ssh/authorized_keys'
+    regexp: "^#?AuthorizedKeysFile"
+    line: "AuthorizedKeysFile  ~/.ssh/authorized_keys"
 
 - name: Create User
   ansible.builtin.user:
@@ -74,7 +73,7 @@
     password: "*"
     update_password: on_create
     groups: sudo
-    append: yes
+    append: true
     create_home: true
 
 - name: Deploy SSH Public Key
@@ -84,7 +83,7 @@
     key: "{{ lookup('file', '/home/{{ user_user }}/.ssh/id_rsa.pub') }}"
 
 - name: Add some aliases
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /home/{{ user_user }}/.bashrc
     state: present
     regexp: "^{{ item }}$"

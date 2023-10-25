@@ -1,0 +1,23 @@
+version: "3.8"
+
+x-server-defaults: &server-defaults
+  image: ansible-debian/server:latest
+  restart: unless-stopped
+  build:
+    context: .
+    args:
+      DEBIAN_VERSION:
+
+services:
+  server-1:
+    <<: *server-defaults
+    container_name: ansible-server-1
+  server-2:
+    <<: *server-defaults
+    container_name: ansible-server-2
+  server-3:
+    <<: *server-defaults
+    container_name: ansible-server-3
+  server-4:
+    <<: *server-defaults
+    container_name: ansible-server-4

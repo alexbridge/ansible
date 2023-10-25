@@ -1,0 +1,20 @@
+---
+base_echo_bool1: true
+base_echo_bool2: "{{ base_echo_bool1 | bool }}"
+
+base_echo_str1: "Echo Str 1"
+base_echo_str2: "{{ base_echo_str1 }} > Echo Str 2"
+
+base_echo_local_user: "{{ lookup('env', 'USER') }}"
+
+base_echo_user: false
+base_echo_facts: false
+base_echo_docker: false
+
+base_echo_vars:
+  - str: "0: {{ base_echo_str1 }}"
+    bool: true
+  - str: "1: {{ base_echo_str1 }}"
+    bool: false
+  - str: "2: {{ base_echo_str1 }}"
+    bool: "{{ base_echo_bool1 | bool }}"

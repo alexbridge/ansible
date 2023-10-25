@@ -1,5 +1,0 @@
----
-- name: Ping host
-  hosts: all
-  roles:
-    - base/ping

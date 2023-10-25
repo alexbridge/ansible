@@ -1,0 +1,11 @@
+---
+- name: Project certbot
+  hosts: all
+  roles:
+    # Switch ssl off to remove certificates
+    - role: project/nginx
+      nginx_ssl: false
+    - project/certbot
+    # Switch ssl on to pickup new certificates
+    - role: project/nginx
+      nginx_ssl: true

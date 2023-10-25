@@ -1,0 +1,5 @@
+---
+- name: Echo
+  hosts: all
+  roles:
+    - base/echo

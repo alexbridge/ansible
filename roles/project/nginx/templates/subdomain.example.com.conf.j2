@@ -1,0 +1,37 @@
+upstream api2 {
+        server 127.0.0.1:8090;
+}
+{% if item.ssl %}
+server {
+    listen 80;
+    server_name {{ item.server_name }};
+    include /etc/nginx/snippets/letsencrypt.conf;
+    location / {
+        return 301 https://{{ item.server_name }}$request_uri;
+    }
+}
+ {% endif %}
+server {
+        server_name {{ item.server_name }};
+        {% if item.ssl %}
+        listen 443 ssl;
+        listen [::]:443 ssl;
+        ssl_certificate {{ item.ssl_crt }};
+        ssl_certificate_key {{ item.ssl_key }};
+        {% else %}
+        listen 80;
+        listen [::]:80;
+        {% endif %}
+
+        access_log  /var/log/nginx/{{ item.server_name }}.access.log;
+        error_log  /var/log/nginx/{{ item.server_name }}.error.log;
+
+        location / {
+                proxy_set_header Host $http_host;
+                {% if item.ssl %}
+                proxy_set_header X-Forwarded-Proto https;
+                {% endif %}
+                proxy_pass http://api2/;
+                proxy_redirect off;
+        }
+}

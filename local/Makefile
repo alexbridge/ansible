@@ -18,13 +18,21 @@ init-ubuntu:
 stop-ubuntu:
 	docker compose -f ./docker/ubuntu/docker-compose.yml down --volumes
 
-# === DEBIAN Local
+# === DEBIAN 11
 init-debian:
 	docker build --tag ansible-debian/server:latest -f ./docker/debian-11/Dockerfile .
 	docker compose -f ./docker/debian-11/docker-compose.yml up --detach --force-recreate
 	./create-inventory.sh
 stop-debian:
 	docker compose -f ./docker/debian-11/docker-compose.yml down --volumes
+
+# === DEBIAN 12
+init-debian-12:
+	docker compose -f ./docker/debian-12/docker-compose.yml config
+	docker compose -f ./docker/debian-12/docker-compose.yml up --detach --force-recreate
+	./create-inventory.sh
+stop-debian-12:
+	docker compose -f ./docker/debian-12/docker-compose.yml down --volumes
 
 # Login to local
 ANSIBLE_ID := -i ./.ssh/ansible-id
@@ -47,8 +55,8 @@ check:
 	ansible -m setup $(INV_LOCAL) all
 ping:
 	ansible -m ping $(INV_LOCAL) all
-play-ping:
-	ansible-playbook $(INV_LOCAL) ../playbooks/ping.yml
+play-echo:
+	ansible-playbook $(INV_LOCAL) ../playbooks/echo.yml
 play-base:
 	ansible-playbook $(INV_LOCAL) ../playbooks/base.yml
 play-project-nginx:
