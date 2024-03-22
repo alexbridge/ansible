@@ -6,7 +6,6 @@ USER root
 
 RUN apt-get update && apt-get install -y openssh-server sudo gpg cron
 
-
 # RUN echo 'root:root' | chpasswd
 # RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
 RUN echo 'PasswordAuthentication no' >> /etc/ssh/sshd_config

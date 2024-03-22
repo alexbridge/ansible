@@ -1,12 +1,11 @@
 version: "3.8"
 
 x-server-defaults: &server-defaults
-  image: ansible-debian/server:latest
+  image: ansible-debian12/server:latest
   restart: unless-stopped
-  build:
-    context: .
-    args:
-      DEBIAN_VERSION:
+  volumes:
+    # Pass local docker to container
+    - /var/run/docker.sock:/var/run/docker.sock
 
 services:
   server-1:
