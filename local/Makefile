@@ -20,7 +20,7 @@ endef
 _recipe-list:
 	@recipe=$$(grep -oE '^[a-z][a-zA-Z0-9-]+:' Makefile | tr -d ':' | \
 	fzf --preview 'make --silent -n {} | head -n 5' --preview-window=50%:down); \
-	[[ -n "$$recipe" && "$(USE_ANSIBLE_RUNNER)" = "YES" ]] && $(call ansible_runner,make $$recipe)
+	[[ -n "$$recipe" && "$(USE_ANSIBLE_RUNNER)" == "YES" ]] && $(call ansible_runner,make $$recipe)
 	[[ -n "$$recipe" && "$(USE_ANSIBLE_RUNNER)" != "YES" ]] && make --silent $$recipe
 
 _exec-ansible-runner:
