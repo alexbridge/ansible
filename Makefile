@@ -10,8 +10,11 @@ ANSIBLE_RUNNER_IMAGE := ansible-runner
 # @$(call ansible_runner,make recipe)
 define ansible_runner
 	docker run --net=host --rm -it \
+	-w /opt/ansible \
 	-v .:/opt/ansible \
 	-v /var/run/docker.sock:/var/run/docker.sock \
+	-v "$$SSH_AUTH_SOCK:$$SSH_AUTH_SOCK" \
+	-e SSH_AUTH_SOCK="$$SSH_AUTH_SOCK" \
 	$(ANSIBLE_RUNNER_IMAGE) $1
 endef
 
@@ -25,12 +28,10 @@ _recipe-list:
 _build-ansible-runner:
 	docker build --tag $(ANSIBLE_RUNNER_IMAGE) .
 
-REMOTE_ID := -i ./inventory/remote/.ssh/ansible-ubuntu
-
 # Remote VM. Replace LOCAL IP with remote VM IP
 remote-ssh-login:
 	source ./local/bash-helpers/helpers.sh
-	ssh -i ./inventory/remote/.ssh/ansible-ubuntu "root@$$(Docker::getIP ansible-ubuntu-server-1)"
+	ssh "root@$$(Docker::getIP ansible-ubuntu-server-1)"
 
 INV_FILE := -i ./inventory/remote/remote.ini
 

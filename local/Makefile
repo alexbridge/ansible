@@ -25,10 +25,6 @@ _recipe-list:
 	[[ -n "$$recipe" && "$(USE_ANSIBLE_RUNNER)" == "YES" ]] && $(call ansible_runner,make $$recipe)
 	[[ -n "$$recipe" && "$(USE_ANSIBLE_RUNNER)" != "YES" ]] && make --silent $$recipe
 
-# Run this in your current shell to setup ENV variables, then call make
-_ssh_agent:
-	eval "$$(ssh-agent -s)" && ssh-add ./.ssh/ansible-id
-
 _exec-ansible-runner:
 	$(call ansible_runner,bash)
 
@@ -78,7 +74,7 @@ setup:
 ping:
 	ansible -m ping $(INV_LOCAL) all
 play-echo:
-	ansible-playbook -vv $(INV_LOCAL) ../playbooks/echo.yml
+	ansible-playbook $(INV_LOCAL) ../playbooks/echo.yml
 play-base:
 	ansible-playbook $(INV_LOCAL) ../playbooks/base.yml
 play-project-nginx:
