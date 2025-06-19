@@ -19,6 +19,4 @@ server_4 ansible_host=$(Docker::getIP ansible-server-4) ansible_ssh_extra_args='
 [all:vars]
 ansible_connection=ssh
 ansible_user=ansible
-# ansible_ssh_pass=root
-ansible_ssh_private_key_file = ./.ssh/ansible-id
 EOF

@@ -13,6 +13,8 @@ define ansible_runner
 	-w /opt/ansible/local \
 	-v ./..:/opt/ansible \
 	-v /var/run/docker.sock:/var/run/docker.sock \
+	-v "$$SSH_AUTH_SOCK:$$SSH_AUTH_SOCK" \
+	-e SSH_AUTH_SOCK="$$SSH_AUTH_SOCK" \
 	$(ANSIBLE_RUNNER_IMAGE) $1
 endef
 
@@ -22,6 +24,10 @@ _recipe-list:
 	fzf --preview 'make --silent -n {} | head -n 5' --preview-window=50%:down); \
 	[[ -n "$$recipe" && "$(USE_ANSIBLE_RUNNER)" == "YES" ]] && $(call ansible_runner,make $$recipe)
 	[[ -n "$$recipe" && "$(USE_ANSIBLE_RUNNER)" != "YES" ]] && make --silent $$recipe
+
+# Run this in your current shell to setup ENV variables, then call make
+_ssh_agent:
+	eval "$$(ssh-agent -s)" && ssh-add ./.ssh/ansible-id
 
 _exec-ansible-runner:
 	$(call ansible_runner,bash)
@@ -51,19 +57,19 @@ _stop-debian-12:
 	docker compose -f ./docker/debian-12/docker-compose.yml down --volumes
 
 # Login to local
-ANSIBLE_ID := -i ./.ssh/ansible-id
+#ANSIBLE_ID := -i ./.ssh/ansible-id
 _ssh-login-1:
 	source ./bash-helpers/helpers.sh
-	ssh  $(ANSIBLE_ID) "ansible@$$(Docker::getIP ansible-server-1)"
+	ssh "ansible@$$(Docker::getIP ansible-server-1)"
 _ssh-login-2:
 	source ./bash-helpers/helpers.sh
-	ssh  $(ANSIBLE_ID) "root@$$(Docker::getIP ansible-server-2)"
+	ssh "root@$$(Docker::getIP ansible-server-2)"
 _ssh-login-3:
 	source ./bash-helpers/helpers.sh
-	ssh  $(ANSIBLE_ID) "root@$$(Docker::getIP ansible-server-3)"
+	ssh "root@$$(Docker::getIP ansible-server-3)"
 _ssh-login-4:
 	source ./bash-helpers/helpers.sh
-	ssh  $(ANSIBLE_ID) "root@$$(Docker::getIP ansible-server-4)"
+	ssh "root@$$(Docker::getIP ansible-server-4)"
 
 # Ansible recipes
 INV_LOCAL := -i ./../inventory/local/local.ini
