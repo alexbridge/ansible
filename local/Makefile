@@ -54,7 +54,7 @@ _stop-debian-12:
 ANSIBLE_ID := -i ./.ssh/ansible-id
 _ssh-login-1:
 	source ./bash-helpers/helpers.sh
-	ssh  $(ANSIBLE_ID) "root@$$(Docker::getIP ansible-server-1)"
+	ssh  $(ANSIBLE_ID) "ansible@$$(Docker::getIP ansible-server-1)"
 _ssh-login-2:
 	source ./bash-helpers/helpers.sh
 	ssh  $(ANSIBLE_ID) "root@$$(Docker::getIP ansible-server-2)"
@@ -67,12 +67,12 @@ _ssh-login-4:
 
 # Ansible recipes
 INV_LOCAL := -i ./../inventory/local/local.ini
-check:
+setup:
 	ansible -m setup $(INV_LOCAL) all
 ping:
 	ansible -m ping $(INV_LOCAL) all
 play-echo:
-	ansible-playbook $(INV_LOCAL) ../playbooks/echo.yml
+	ansible-playbook -vv $(INV_LOCAL) ../playbooks/echo.yml
 play-base:
 	ansible-playbook $(INV_LOCAL) ../playbooks/base.yml
 play-project-nginx:

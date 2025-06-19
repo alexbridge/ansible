@@ -1,5 +1,7 @@
 ---
 - name: Echo
   hosts: all
+  vars_files:
+    - ../vars/remote.yml
   roles:
     - base/echo

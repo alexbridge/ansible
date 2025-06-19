@@ -17,6 +17,15 @@ RUN echo 'UsePAM no' >> /etc/ssh/sshd_config
 RUN mkdir -p /root/.ssh
 COPY .ssh/ansible-id.pub /root/.ssh/authorized_keys
 
+RUN for username in ansible deployment; do \
+    useradd --groups users --create-home --shell /bin/bash $username && \
+    mkdir -p /home/$username/.ssh && \
+    cp /root/.ssh/authorized_keys /home/$username/.ssh/authorized_keys && \
+    chown -R $username:users /home/$username && \
+    chmod -R 0700 /home/$username/.ssh && \
+    chmod 0600 /home/$username/.ssh/authorized_keys; \
+done
+
 RUN mkdir /var/run/sshd 
 
 CMD ["/usr/sbin/sshd", "-E", "/var/log/ssh.log", "-D"]

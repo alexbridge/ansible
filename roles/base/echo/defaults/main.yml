@@ -5,9 +5,10 @@ base_echo_bool2: "{{ base_echo_bool1 | bool }}"
 base_echo_str1: "Echo Str 1"
 base_echo_str2: "{{ base_echo_str1 }} > Echo Str 2"
 
-base_echo_local_user: "{{ lookup('env', 'USER') }}"
+# base_echo_local_user: "{{ lookup('env', 'USER') }}"
+base_echo_local_user: "{{ ansible_user }}"
 
-base_echo_user: false
+base_echo_user: true
 base_echo_facts: false
 base_echo_docker: false
 
